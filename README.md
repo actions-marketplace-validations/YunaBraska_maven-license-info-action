@@ -32,7 +32,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
     * dependencies.json
     * dependencies.xml
 * update Shields/Badges
-  see [ShieldsDemo](https://github.com/YunaBraska/maven-license-info-action/blob/main/ShieldDemo.md)
+  see [ShieldsDemo](https://github.com/YunaBraska/maven-license-info-action/blob/main/test/resources/maven/project/wrapper_17/ShieldDemo.md)
 
 ## Usage
 

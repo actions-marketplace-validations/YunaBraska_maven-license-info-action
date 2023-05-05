@@ -47,7 +47,7 @@ test('Test on wrapper_17 dir', () => {
     expect(outputs.result.get('license_count_provided')).toEqual(0);
     expect(outputs.result.get('license_count_runtime')).toEqual(0);
     expect(outputs.result.get('license_count_system')).toEqual(0);
-    expect(outputs.result.get('license_system_test')).toEqual(3);
+    expect(outputs.result.get('license_count_test')).toEqual(3);
     expect(outputs.result.get('license_list')).toEqual('AGPL:3, Apache License:2.0, BSD:3, CPE:1, EDL:1.0, EPL:1.0, EPL:2.0, GPL:2, LGPL:1, MIT:1');
     expect(outputs.result.get('license_limited_list')).toEqual('AGPL:3, EPL:1.0, EPL:2.0, GPL:2, LGPL:1');
 });
@@ -71,7 +71,7 @@ test('Test on wrapper_17 dir with scope excludes', () => {
     expect(outputs.result.get('license_count_provided')).toEqual(0);
     expect(outputs.result.get('license_count_runtime')).toEqual(0);
     expect(outputs.result.get('license_count_system')).toEqual(0);
-    expect(outputs.result.get('license_system_test')).toEqual(0);
+    expect(outputs.result.get('license_count_test')).toEqual(0);
     expect(outputs.result.get('license_list')).toEqual('Apache License:2.0, CPE:1, EPL:1.0, EPL:2.0, GPL:2, LGPL:1, MIT:1');
     expect(outputs.result.get('license_limited_list')).toEqual('EPL:1.0, EPL:2.0, GPL:2, LGPL:1');
 });
@@ -97,7 +97,7 @@ test('Test on wrapper_17 dir with fail regex', () => {
     expect(outputs.result.get('license_count_provided')).toEqual(0);
     expect(outputs.result.get('license_count_runtime')).toEqual(0);
     expect(outputs.result.get('license_count_system')).toEqual(0);
-    expect(outputs.result.get('license_system_test')).toEqual(6);
+    expect(outputs.result.get('license_count_test')).toEqual(6);
     expect(outputs.result.get('license_list')).toEqual('AGPL:3, Apache License:2.0, BSD:3, EDL:1.0, EPL:2.0, MIT:1');
     expect(outputs.result.get('license_limited_list')).toEqual('AGPL:3, EPL:2.0');
 });

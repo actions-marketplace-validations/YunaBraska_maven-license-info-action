@@ -56,7 +56,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
     echo "scopes                   [${{ steps.license_info.outputs.license_count }}]"
     echo "license_list             [${{ steps.license_info.outputs.license_list }}]"
     echo "license_count            [${{ steps.license_info.outputs.license_count }}]"
-    echo "license_system_test      [${{ steps.license_info.outputs.license_count_compile }}]"
+    echo "license_count_test      [${{ steps.license_info.outputs.license_count_compile }}]"
     echo "license_count_compile    [${{ steps.license_info.outputs.license_count_compile }}]"
     echo "license_limited_list     [${{ steps.license_info.outputs.license_limited_list }}]"
     echo "dependency_list          [${{ steps.license_info.outputs.dependency_list }}]"
@@ -99,7 +99,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 | license_count_provided    | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[provided]                                        |
 | license_count_runtime     | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[runtime]                                         |
 | license_count_system      | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[system]                                          |
-| license_system_test       | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
+| license_count_test       | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
 
 ### \[DEV] Setup Environment
 

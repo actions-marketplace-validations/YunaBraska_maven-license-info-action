@@ -66,7 +66,7 @@ outputs:
     description: 'Number of licenses provided in third party dependencies for scope [runtime]'
   license_count_system:
     description: 'Number of licenses provided in third party dependencies for scope [system]'
-  license_system_test:
+  license_count_test:
     description: 'Number of licenses provided in third party dependencies for scope [test]'
 runs:
   using: 'node16'

@@ -292,7 +292,7 @@ function setOutputs(result: Map<string, ResultType>, licenses: License[], depend
     result.set('license_count_compile', licenses.filter(l => l.scope === 'compile').length);
     result.set('license_count_provided', licenses.filter(l => l.scope === 'provided').length);
     result.set('license_count_runtime', licenses.filter(l => l.scope === 'runtime').length);
-    result.set('license_system_test', licenses.filter(l => l.scope === 'test').length);
+    result.set('license_count_test', licenses.filter(l => l.scope === 'test').length);
     result.set('license_count_system', licenses.filter(l => l.scope === 'system').length);
     result.set('license_count_import', licenses.filter(l => l.scope === 'import').length);
 

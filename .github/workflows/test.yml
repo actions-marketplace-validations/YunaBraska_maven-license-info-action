@@ -1,0 +1,53 @@
+name: "TEST"
+
+on:
+  push:
+    # Already covered by "publish.yml" workflow
+    branches:
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
+      - '!master'
+      - '!main'
+      - '!default'
+    tags-ignore:
+      - '**'
+  workflow_dispatch:
+    ref:
+      type: string
+      description: "[ref] e.g. branch, tag or commit to checkout [default: github.ref_name || github.head_ref ]"
+      required: false
+
+jobs:
+  node_test:
+    name: "Node Test"
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_node_test.yml@main
+    with:
+      ref: ${{ inputs.ref || github.ref_name || github.head_ref }}
+  show_case:
+    needs: node_test
+    name: "Show Case"
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 1
+      - name: "Read License Info"
+        id: "license_info"
+        with:
+          work-dir: 'test/resources/maven/project/wrapper_17'
+        uses: YunaBraska/maven-license-info-action@main
+      - name: "Print License Info"
+        run: |
+          echo "scopes                   [${{ steps.license_info.outputs.license_count }}]"
+          echo "license_list             [${{ steps.license_info.outputs.license_list }}]"
+          echo "license_count            [${{ steps.license_info.outputs.license_count }}]"
+          echo "license_system_test      [${{ steps.license_info.outputs.license_count_compile }}]"
+          echo "license_count_compile    [${{ steps.license_info.outputs.license_count_compile }}]"
+          echo "license_limited_list     [${{ steps.license_info.outputs.license_limited_list }}]"
+          echo "dependency_list          [${{ steps.license_info.outputs.dependency_list }}]"
+          echo "dependency_count         [${{ steps.license_info.outputs.dependency_count }}]"
+          echo "dependency_count_test    [${{ steps.license_info.outputs.dependency_count_test }}]"
+          echo "dependency_count_compile [${{ steps.license_info.outputs.dependency_count_compile }}]"

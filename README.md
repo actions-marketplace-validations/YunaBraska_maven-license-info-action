@@ -99,7 +99,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 | license_count_provided    | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[provided]                                        |
 | license_count_runtime     | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[runtime]                                         |
 | license_count_system      | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[system]                                          |
-| license_system_test        | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
+| license_system_test       | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
 
 ### \[DEV] Setup Environment
 

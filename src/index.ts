@@ -288,6 +288,7 @@ function setOutputs(result: Map<string, ResultType>, licenses: License[], depend
     result.set('license_count', licenses.length);
     result.set('license_list', licenses.map(l => l.name + ':' + l.version || '').join(', '));
     result.set('license_limited_list', licenses.filter(l => l.isLimited).map(l => l.name + ':' + l.version || '').join(', '));
+    result.set('license_count_limited', licenses.filter(l => l.isLimited).length);
     result.set('license_count_compile', licenses.filter(l => l.scope === 'compile').length);
     result.set('license_count_provided', licenses.filter(l => l.scope === 'provided').length);
     result.set('license_count_runtime', licenses.filter(l => l.scope === 'runtime').length);

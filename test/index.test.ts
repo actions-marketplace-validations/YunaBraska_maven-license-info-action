@@ -11,7 +11,7 @@ let workDir: PathOrFileDescriptor;
 beforeEach(() => {
     workDir = path.join(os.tmpdir(), 'license_info_action_test');
     removeDir(workDir);
-    copyDir(path.join(__dirname, 'resources/maven/project/wrapper_17'), workDir)
+    copyDir(path.join(__dirname, addWinSupport('resources/maven/project/wrapper_17')), workDir)
 });
 
 afterEach(() => {
@@ -27,7 +27,7 @@ test('Test on empty dir', () => {
 
 //Also used for shield demo
 test('Test on wrapper_17 dir', () => {
-    let realWorkDir = path.join(__dirname, 'resources/maven/project/wrapper_17');
+    let realWorkDir = path.join(__dirname, addWinSupport('resources/maven/project/wrapper_17'));
     let outputs = main.run(null, realWorkDir, -1, null, null, null, null, null);
     expect(outputs.result.get('scopes')).toEqual('compile, test');
     expect(outputs.result.get('scopes_all')).toEqual('compile, import, provided, runtime, system, test');
@@ -102,6 +102,15 @@ test('Test on wrapper_17 dir with fail regex', () => {
     expect(outputs.result.get('license_limited_list')).toEqual('AGPL:3, EPL:2.0');
 });
 
+test('Test on wrapper_17 dir with different output dir', () => {
+    let outputs = main.run(null, workDir, -1, null, null, addWinSupport('docs/licenses'), 'compile, import, provided, runtime, system', null);
+    expect(outputs.result.get('scopes')).toEqual('test');
+    expect(outputs.result.get('scopes_all')).toEqual('compile, import, provided, runtime, system, test');
+    expect(outputs.result.get('output-dir')).toContain(addWinSupport('docs/licenses'));
+    expect(outputs.result.get('dependency_count')).toEqual(29);
+    expect(outputs.result.get('license_count')).toEqual(6);
+});
+
 test('Test isEmpty', () => {
     expect(isEmpty(null)).toEqual(true);
     expect(isEmpty(undefined)).toEqual(true);
@@ -156,6 +165,10 @@ function copyDir(source: string, destination: string) {
             copyDir(currentPath, path.join(destination, file));
         }
     }
+}
+
+function addWinSupport(url: string): string {
+    return process.platform === "win32" ? url.replace(/\//g, '\\') : url;
 }
 
 

@@ -47,6 +47,8 @@ try {
     let workspace = process.env['GITHUB_WORKSPACE']?.toString() || null;
     if (!workDir || workDir === ".") {
         workDir = getWorkingDirectory(workspace);
+    } else if (!path.isAbsolute(workDir.toString())) {
+        outputDir = path.join(__dirname, workDir.toString())
     }
     if (outputDir === ".") {
         outputDir = workDir;
@@ -100,6 +102,8 @@ function run(
     excludeScopes = isEmpty(excludeScopes) ? null : excludeScopes?.trim().toLowerCase().replace(' ', '') || null;
     if (!outputDir) {
         outputDir = path.join(workDir.toString(), 'target', "maven-license-info-action")
+    } else if (!path.isAbsolute(outputDir.toString())) {
+        outputDir = path.join(workDir.toString(), outputDir.toString())
     }
     let result = new Map<string, ResultType>();
     result.set('work-dir', workDir.toString());
@@ -264,11 +268,12 @@ function getResultsForScopes(excludeScopes: string | null, outputDir: string | B
         dependencies: [],
         licenses: []
     };
+    const mavenCmd = getMavenCmd(workDir, platform);
     AVAILABLE_SCOPES.forEach(scope => {
         if (!excludeScopes || !excludeScopes.includes(scope)) {
             console.log(`Fetching scope [${scope}]`)
             let outputFileRaw = path.join(outputDir.toString(), `${scope}.raw`);
-            let command_log = cmd(workDir, `${getMavenCmd(workDir, platform)} license:add-third-party -U -Dlicense.outputDirectory="${path.dirname(outputFileRaw)}" -Dlicense.thirdPartyFilename="${path.basename(outputFileRaw)}" -Dlicense.excludedScopes="${AVAILABLE_SCOPES.filter(s => s !== scope).join(',')}"`);
+            let command_log = cmd(workDir, `${mavenCmd} license:add-third-party -U -Dlicense.outputDirectory="${path.dirname(outputFileRaw)}" -Dlicense.thirdPartyFilename="${path.basename(outputFileRaw)}" -Dlicense.excludedScopes="${AVAILABLE_SCOPES.filter(s => s !== scope).join(',')}"`);
             if (command_log?.toLowerCase().includes('error')) {
                 throw new Error(command_log);
             }

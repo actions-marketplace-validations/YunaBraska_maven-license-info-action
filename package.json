@@ -1,5 +1,5 @@
 {
-  "name": "git-info-action",
+  "name": "maven-license-info-action",
   "version": "1.0.0",
   "description": "Provides git information",
   "main": "./lib/index.js",

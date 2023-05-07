@@ -1,7 +1,7 @@
 //https://github.com/actions/toolkit/tree/main/packages/
 import {PathOrFileDescriptor} from "fs";
 import {
-    cmd,
+    cmd, cmdLog,
     Dependency,
     isEmpty,
     License,
@@ -55,7 +55,6 @@ try {
     }
 
     let runResult = run(
-        process.platform,
         workDir,
         deep,
         failLicenseRegex,
@@ -89,7 +88,6 @@ try {
 }
 
 function run(
-    platform: string,
     workDir: PathOrFileDescriptor,
     deep: number,
     failLicenseRegex: string | null,
@@ -99,9 +97,10 @@ function run(
     nullToEmpty: boolean
 ): RunResult {
     //DEFAULTS
+    let platform = process.platform;
     excludeScopes = isEmpty(excludeScopes) ? null : excludeScopes?.trim().toLowerCase().replace(' ', '') || null;
     if (!outputDir) {
-        outputDir = path.join(workDir.toString(), 'target', "maven-license-info-action")
+        outputDir = path.join(workDir.toString(), 'target', 'maven-license-info-action');
     } else if (!path.isAbsolute(outputDir.toString())) {
         outputDir = path.join(workDir.toString(), outputDir.toString())
     }
@@ -212,7 +211,7 @@ function getMavenCmd(workDir: PathOrFileDescriptor, platform: string): string {
     try {
         let wrapperMapFile = path.join(workDir.toString(), '.mvn', 'wrapper', 'maven-wrapper.properties');
         let has_wrapper = (fs.existsSync(path.join(workDir.toString(), 'mvnw.cmd')) || fs.existsSync(path.join(workDir.toString(), 'mvnw')) || fs.existsSync(wrapperMapFile));
-        return has_wrapper ? (platform === "win32" ? 'mvnw.cmd' : './mvnw') : 'mvn';
+        return has_wrapper ? (platform === "win32" ? '.\\mvnw.cmd' : './mvnw') : 'mvn';
     } catch (err) {
         console.error(err);
     }
@@ -269,13 +268,13 @@ function getResultsForScopes(excludeScopes: string | null, outputDir: string | B
         licenses: []
     };
     const mavenCmd = getMavenCmd(workDir, platform);
-    AVAILABLE_SCOPES.forEach(scope => {
+    for (let i = 0; i < AVAILABLE_SCOPES.length; i++) {
+        let scope = AVAILABLE_SCOPES[i];
         if (!excludeScopes || !excludeScopes.includes(scope)) {
-            console.log(`Fetching scope [${scope}]`)
             let outputFileRaw = path.join(outputDir.toString(), `${scope}.raw`);
-            let command_log = cmd(workDir, `${mavenCmd} license:add-third-party -U -Dlicense.outputDirectory="${path.dirname(outputFileRaw)}" -Dlicense.thirdPartyFilename="${path.basename(outputFileRaw)}" -Dlicense.excludedScopes="${AVAILABLE_SCOPES.filter(s => s !== scope).join(',')}"`);
+            let command_log = cmdLog(workDir, `${mavenCmd} license:add-third-party -U -Dlicense.outputDirectory="${path.dirname(outputFileRaw)}" -Dlicense.thirdPartyFilename="${path.basename(outputFileRaw)}" -Dlicense.excludedScopes="${AVAILABLE_SCOPES.filter(s => s !== scope).join(',')}"`);
             if (command_log?.toLowerCase().includes('error')) {
-                throw new Error(command_log);
+                break;
             }
             let scopeDependencies = parseDependencies(outputFileRaw, scope);
             if (scopeDependencies.length > 0) {
@@ -284,7 +283,7 @@ function getResultsForScopes(excludeScopes: string | null, outputDir: string | B
                 scopeResult.licenses = scopeResult.licenses.concat(scopeLicenses);
             }
         }
-    })
+    }
     return scopeResult;
 }
 

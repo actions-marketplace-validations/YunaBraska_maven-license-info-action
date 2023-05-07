@@ -21,14 +21,15 @@ afterEach(() => {
 test('Test on empty dir', () => {
     workDir = path.join(workDir.toString(), 'empty_dir');
     fs.mkdirSync(workDir);
-    let outputs = main.run(null, workDir, -1, null, null, null, null, null);
+    let outputs = main.run(workDir, -1, null, null, null, null, null);
     expect(outputs.errors[0]).toEqual(`Empty work-dir [${workDir}] - nothing to process`);
 });
 
 //Also used for shield demo
 test('Test on wrapper_17 dir', () => {
     let realWorkDir = path.join(__dirname, addWinSupport('resources/maven/project/wrapper_17'));
-    let outputs = main.run(null, realWorkDir, -1, null, null, null, null, null);
+    removeDir(path.join(realWorkDir.toString(), 'target'));
+    let outputs = main.run(realWorkDir, -1, null, null, null, null, null);
     expect(outputs.result.get('scopes')).toEqual('compile, test');
     expect(outputs.result.get('scopes_all')).toEqual('compile, import, provided, runtime, system, test');
 
@@ -53,7 +54,7 @@ test('Test on wrapper_17 dir', () => {
 });
 
 test('Test on wrapper_17 dir with scope excludes', () => {
-    let outputs = main.run(null, workDir, -1, null, null, null, 'import, provided, runtime, system, test', null);
+    let outputs = main.run(workDir, -1, null, null, null, 'import, provided, runtime, system, test', null);
     expect(outputs.result.get('scopes')).toEqual('compile');
     expect(outputs.result.get('scopes_all')).toEqual('compile, import, provided, runtime, system, test');
 
@@ -77,7 +78,7 @@ test('Test on wrapper_17 dir with scope excludes', () => {
 });
 
 test('Test on wrapper_17 dir with fail regex', () => {
-    let outputs = main.run(null, workDir, -1, 'AGPL', 'itextpdf', null, 'compile, import, provided, runtime, system', null);
+    let outputs = main.run(workDir, -1, 'AGPL', 'itextpdf', null, 'compile, import, provided, runtime, system', null);
     expect(outputs.errors[0]).toEqual('License [AGPL:3] for dependency [com.itextpdf:itextpdf:5.5.0] matches the failLicenseRegex');
     expect(outputs.errors[1]).toEqual('Dependency [com.itextpdf:itextpdf:5.5.0] matches the failDependencyRegex');
     expect(outputs.result.get('scopes')).toEqual('test');
@@ -103,7 +104,7 @@ test('Test on wrapper_17 dir with fail regex', () => {
 });
 
 test('Test on wrapper_17 dir with different output dir', () => {
-    let outputs = main.run(null, workDir, -1, null, null, addWinSupport('docs/licenses'), 'compile, import, provided, runtime, system', null);
+    let outputs = main.run(workDir, -1, null, null, addWinSupport('docs/licenses'), 'compile, import, provided, runtime, system', null);
     expect(outputs.result.get('scopes')).toEqual('test');
     expect(outputs.result.get('scopes_all')).toEqual('compile, import, provided, runtime, system, test');
     expect(outputs.result.get('output-dir')).toContain(addWinSupport('docs/licenses'));
@@ -124,18 +125,29 @@ test('Test isEmpty', () => {
 });
 
 function removeDir(folderPath: PathOrFileDescriptor) {
-    if (fs.existsSync(folderPath.toString())) {
-        fs.readdirSync(folderPath.toString()).forEach((file, index) => {
-            const curPath = path.join(folderPath.toString(), file);
-            if (fs.lstatSync(curPath).isDirectory()) {
-                // recurse
-                removeDir(curPath);
-            } else {
-                // delete file
-                fs.unlinkSync(curPath);
+    for (let i = 0; i < 10; i++) {
+        try {
+            if (fs.existsSync(folderPath.toString())) {
+                fs.readdirSync(folderPath.toString()).forEach((file, index) => {
+                    const curPath = path.join(folderPath.toString(), file);
+                    if (fs.lstatSync(curPath).isDirectory()) {
+                        // recurse
+                        removeDir(curPath);
+                    } else {
+                        // delete file
+                        fs.unlinkSync(curPath);
+                    }
+                });
+                fs.rmdirSync(folderPath.toString());
             }
-        });
-        fs.rmdirSync(folderPath.toString());
+        } catch (error) {
+            console.log(`Remove attempt [${{i}}] dir [${folderPath.toString()}]`);
+            const start = Date.now();
+            while (Date.now() - start < 512) {
+            }
+            continue;
+        }
+        break;
     }
 }
 

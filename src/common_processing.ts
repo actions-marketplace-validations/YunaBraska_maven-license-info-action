@@ -107,13 +107,14 @@ export function execCmd(workDir: PathOrFileDescriptor, logError: boolean, comman
             result = require('child_process').execSync(command + (logError ? devNull : ''), {
                 cwd: workDir.toString(),
                 encoding: 'utf8',
-                timeout: 10000
+                timeout: 999999
             });
         } catch (error) {
             if (logError) {
                 console.debug(error);
             }
-            continue;
+            return error?.toString() || 'Error';
+            // continue;
         }
         if (!isEmpty(result)) {
             return result.trim();

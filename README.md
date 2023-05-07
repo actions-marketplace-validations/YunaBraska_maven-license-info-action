@@ -99,7 +99,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 | license_count_provided    | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[provided]                                        |
 | license_count_runtime     | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[runtime]                                         |
 | license_count_system      | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[system]                                          |
-| license_count_test       | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
+| license_count_test        | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
 
 ### \[DEV] Setup Environment
 
@@ -109,7 +109,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 * NodeJs 16: do not upgrade nodeJs as GitHub actions latest version is 16
 * Hint: please do not remove the node modules as they are required for custom GitHub actions :(
 
-[build_shield]: https://github.com/YunaBraska/maven-license-info-action/workflows/RELEASE/badge.svg
+[build_shield]: https://github.com/YunaBraska/maven-license-info-action/actions/workflows/publish.yml/badge.svg
 
 [build_link]: https://github.com/YunaBraska/maven-license-info-action/actions/workflows/publish.yml/badge.svg
 

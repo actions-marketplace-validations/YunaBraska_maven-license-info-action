@@ -45,12 +45,12 @@ try {
     let nullToEmpty = core.getInput('null-to-empty') || null;
 
     let workspace = process.env['GITHUB_WORKSPACE']?.toString() || null;
-    if (!workDir || workDir === ".") {
+    if (!workDir || workDir === '.') {
         workDir = getWorkingDirectory(workspace);
     } else if (!path.isAbsolute(workDir.toString())) {
         outputDir = path.join(__dirname, workDir.toString())
     }
-    if (outputDir === ".") {
+    if (outputDir === '.') {
         outputDir = workDir;
     }
 

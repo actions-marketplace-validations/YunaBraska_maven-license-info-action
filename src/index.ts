@@ -59,8 +59,8 @@ try {
         deep,
         failLicenseRegex,
         failDependencyRegex,
-        excludeScopes,
         outputDir,
+        excludeScopes,
         !isEmpty(nullToEmpty) ? nullToEmpty.toLowerCase() === 'true' : true
     );
     let result = runResult.result;

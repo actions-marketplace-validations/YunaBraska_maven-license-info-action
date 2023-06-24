@@ -134,7 +134,7 @@ function extractDependencies(line: string, scope: string): Dependency {
     let matches = line.match(/(\(.*?\)\s*)/g);
     if (matches && matches.length > 1) {
         let dependencyStr = matches[matches.length - 1];
-        let urlStart = Math.max(dependencyStr.indexOf('http'), dependencyStr.indexOf('${'));
+        let urlStart = Math.max(Math.max(dependencyStr.indexOf('https:'), dependencyStr.indexOf('http:')), dependencyStr.indexOf('${'));
         dependency.scope = scope;
         dependency.url = clearValue(dependencyStr.substring(urlStart));
         dependency.line = clearValue(dependencyStr.substring(0, urlStart));

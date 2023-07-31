@@ -4,7 +4,8 @@
   "description": "Provides git information",
   "main": "./lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run package",
+    "package": "npx ncc build --source-map --license licenses.txt",
     "test": "npm run build && jest --coverage"
   },
   "repository": {
@@ -27,6 +28,7 @@
     "@actions/github": "^5.1.1"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.36.1",
     "@jest/types": "^29.6.1",
     "@types/jest": "^29.5.3",
     "@types/node": "^18.17.1",

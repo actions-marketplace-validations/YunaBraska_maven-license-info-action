@@ -15,6 +15,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 [![Size][size_shield]][size_shield]
 ![Label][label_shield]
 ![Label][node_version]
+[![Licenses](https://img.shields.io/badge/Licenses-065d7c?style=flat-square)](https://github.com/YunaBraska/maven-license-info-action/blob/main/dist/licenses.txt)
 
 ### Requirements
 

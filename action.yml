@@ -70,7 +70,7 @@ outputs:
     description: 'Number of licenses provided in third party dependencies for scope [test]'
 runs:
   using: 'node16'
-  main: 'lib/index.js'
+  main: 'dist/index.js'
 branding:
   icon: file-text
   color: purple

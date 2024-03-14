@@ -107,7 +107,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 * clean environment: `./clean_node.sh`
 * Build: `npm run build` to "compile" `index.ts` to `./lib/index.js`
 * Test: `npm run test`
-* NodeJs 16: do not upgrade nodeJs as GitHub actions latest version is 16
+* NodeJs 20: do not upgrade nodeJs as GitHub actions latest version is 20
 * Hint: please do not remove the node modules as they are required for custom GitHub actions :(
 
 [build_shield]: https://github.com/YunaBraska/maven-license-info-action/actions/workflows/publish.yml/badge.svg

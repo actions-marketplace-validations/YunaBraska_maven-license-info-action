@@ -69,8 +69,8 @@ outputs:
   license_count_test:
     description: 'Number of licenses provided in third party dependencies for scope [test]'
 runs:
-  using: 'node16'
-  main: 'lib/index.js'
+  using: 'node20'
+  main: 'dist/index.js'
 branding:
   icon: file-text
   color: purple

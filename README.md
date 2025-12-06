@@ -3,7 +3,7 @@
 Validates & generates licenses from maven dependencies
 See also [Common Software License Table](https://github.com/YunaBraska/software-licenses)
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=HFHFUT3G6TZF6)
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/YunaBraska)
 
 [![Build][build_shield]][build_link]
 [![Maintainable][maintainable_shield]][maintainable_link]
@@ -15,6 +15,7 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 [![Size][size_shield]][size_shield]
 ![Label][label_shield]
 ![Label][node_version]
+[![Licenses](https://img.shields.io/badge/Licenses-065d7c?style=flat-square)](https://github.com/YunaBraska/maven-license-info-action/blob/main/dist/licenses.txt)
 
 ### Requirements
 
@@ -99,17 +100,17 @@ See also [Common Software License Table](https://github.com/YunaBraska/software-
 | license_count_provided    | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[provided]                                        |
 | license_count_runtime     | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[runtime]                                         |
 | license_count_system      | 0                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[system]                                          |
-| license_count_test       | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
+| license_count_test        | 3                                                                                         | 0       | Number of licenses provided in third party dependencies for scope \[test]                                            |
 
 ### \[DEV] Setup Environment
 
 * clean environment: `./clean_node.sh`
 * Build: `npm run build` to "compile" `index.ts` to `./lib/index.js`
 * Test: `npm run test`
-* NodeJs 16: do not upgrade nodeJs as GitHub actions latest version is 16
+* NodeJs 20: do not upgrade nodeJs as GitHub actions latest version is 20
 * Hint: please do not remove the node modules as they are required for custom GitHub actions :(
 
-[build_shield]: https://github.com/YunaBraska/maven-license-info-action/workflows/RELEASE/badge.svg
+[build_shield]: https://github.com/YunaBraska/maven-license-info-action/actions/workflows/publish.yml/badge.svg
 
 [build_link]: https://github.com/YunaBraska/maven-license-info-action/actions/workflows/publish.yml/badge.svg
 

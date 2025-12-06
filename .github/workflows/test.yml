@@ -24,6 +24,7 @@ jobs:
     uses: YunaBraska/YunaBraska/.github/workflows/wc_node_test.yml@main
     with:
       ref: ${{ inputs.ref || github.ref_name || github.head_ref }}
+      setup_java: 'true'
   show_case:
     needs: node_test
     name: "Show Case"

@@ -68,6 +68,8 @@ outputs:
     description: 'Number of licenses provided in third party dependencies for scope [system]'
   license_count_test:
     description: 'Number of licenses provided in third party dependencies for scope [test]'
+  errors:
+    description: 'List of processing errors as JSON array'
 runs:
   using: 'node20'
   main: 'dist/index.js'

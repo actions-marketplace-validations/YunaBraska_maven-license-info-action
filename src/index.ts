@@ -35,55 +35,57 @@ const LICENSE_LIMIT_LIST = [
     'Artistic[-azAZ09]*(?!1)\\d+',
 ]
 
-try {
-    let workDir = core.getInput('work-dir');
-    let failLicenseRegex = core.getInput('fail-license-regex') || null;
-    let failDependencyRegex = core.getInput('fail-dependency-regex') || null;
-    let outputDir = core.getInput('output-dir') || null;
-    let deep = parseInt(core.getInput('deep')) || -1;
-    let excludeScopes = core.getInput('exclude-scopes') || null;
-    let nullToEmpty = core.getInput('null-to-empty') || null;
+if (require.main === module) {
+    try {
+        let workDir = core.getInput('work-dir');
+        let failLicenseRegex = core.getInput('fail-license-regex') || null;
+        let failDependencyRegex = core.getInput('fail-dependency-regex') || null;
+        let outputDir = core.getInput('output-dir') || null;
+        let deep = parseInt(core.getInput('deep')) || -1;
+        let excludeScopes = core.getInput('exclude-scopes') || null;
+        let nullToEmpty = core.getInput('null-to-empty') || null;
 
-    let workspace = process.env['GITHUB_WORKSPACE']?.toString() || null;
-    if (!workDir || workDir === '.') {
-        workDir = getWorkingDirectory(workspace);
-    } else if (!path.isAbsolute(workDir.toString())) {
-        outputDir = path.join(__dirname, workDir.toString())
-    }
-    if (outputDir === '.') {
-        outputDir = workDir;
-    }
+        let workspace = process.env['GITHUB_WORKSPACE']?.toString() || null;
+        if (!workDir || workDir === '.') {
+            workDir = getWorkingDirectory(workspace);
+        } else if (!path.isAbsolute(workDir.toString())) {
+            outputDir = path.join(__dirname, workDir.toString())
+        }
+        if (outputDir === '.') {
+            outputDir = workDir;
+        }
 
-    let runResult = run(
-        workDir,
-        deep,
-        failLicenseRegex,
-        failDependencyRegex,
-        outputDir,
-        excludeScopes,
-        !isEmpty(nullToEmpty) ? nullToEmpty.toLowerCase() === 'true' : true
-    );
-    let result = runResult.result;
-    result.set('GITHUB_WORKSPACE', workspace || null);
+        let runResult = run(
+            workDir,
+            deep,
+            failLicenseRegex,
+            failDependencyRegex,
+            outputDir,
+            excludeScopes,
+            !isEmpty(nullToEmpty) ? nullToEmpty.toLowerCase() === 'true' : true
+        );
+        let result = runResult.result;
+        result.set('GITHUB_WORKSPACE', workspace || null);
 
-    console.log(JSON.stringify(Object.fromEntries(sortMap(result)), null, 4));
+        console.log(JSON.stringify(Object.fromEntries(sortMap(result)), null, 4));
 
-    result.forEach((value, key) => {
-        core.setOutput(key, value);
-    });
-
-    if (runResult.errors.length != 0) {
-        let errorMessage = '';
-        runResult.errors.forEach(error => {
-            errorMessage += `${error}${os.EOL}`;
+        result.forEach((value, key) => {
+            core.setOutput(key, value);
         });
-        core.setFailed(errorMessage);
-    }
-} catch (e) {
-    if (typeof e === "string") {
-        core.setFailed(e.toUpperCase());
-    } else if (e instanceof Error) {
-        core.setFailed(e.message);
+
+        if (runResult.errors.length != 0) {
+            let errorMessage = '';
+            runResult.errors.forEach(error => {
+                errorMessage += `${error}${os.EOL}`;
+            });
+            core.setFailed(errorMessage);
+        }
+    } catch (e) {
+        if (typeof e === "string") {
+            core.setFailed(e.toUpperCase());
+        } else if (e instanceof Error) {
+            core.setFailed(e.message);
+        }
     }
 }
 
@@ -115,7 +117,8 @@ function run(
         return {result, errors: [`Empty work-dir [${workDir}] - nothing to process`]}
     }
     fs.mkdirSync(outputDir.toString(), {recursive: true});
-    const scopeResult: ScopeResult = getResultsForScopes(excludeScopes, outputDir, workDir, platform);
+    const errors: string[] = [];
+    const scopeResult: ScopeResult = getResultsForScopes(excludeScopes, outputDir, workDir, platform, errors);
 
     //sort && unique
     let licenses = scopeResult.licenses.filter((l, i, list) => i === list.findIndex((item) => item.name === l.name && item.version === l.version)).sort((a, b) => `${a.toString()}`.localeCompare(`${b.toString()}`));
@@ -123,9 +126,12 @@ function run(
     saveToFiles(scopeResult, outputDir);
     setOutputs(result, licenses, dependencies);
     updateBadges(result, workDir, deep);
+    const dependencyErrors = checkDependencies(dependencies, failLicenseRegex, failDependencyRegex);
+    const allErrors = errors.concat(dependencyErrors);
+    result.set('errors', JSON.stringify(allErrors));
     return {
         result: sortMap(nullToEmpty ? replaceNullWithEmptyMap(result) : result),
-        errors: checkDependencies(dependencies, failLicenseRegex, failDependencyRegex)
+        errors: allErrors
     };
 }
 
@@ -262,7 +268,7 @@ function parseDependencies(outputFile: string, scope: string) {
 }
 
 
-function getResultsForScopes(excludeScopes: string | null, outputDir: string | Buffer | URL | number, workDir: string | Buffer | URL | number, platform: string): ScopeResult {
+function getResultsForScopes(excludeScopes: string | null, outputDir: string | Buffer | URL | number, workDir: string | Buffer | URL | number, platform: string, errors: string[]): ScopeResult {
     const scopeResult: ScopeResult = {
         dependencies: [],
         licenses: []
@@ -273,7 +279,10 @@ function getResultsForScopes(excludeScopes: string | null, outputDir: string | B
         if (!excludeScopes || !excludeScopes.includes(scope)) {
             let outputFileRaw = path.join(outputDir.toString(), `${scope}.raw`);
             let command_log = cmdLog(workDir, `${mavenCmd} license:add-third-party -U -Dlicense.outputDirectory="${path.dirname(outputFileRaw)}" -Dlicense.thirdPartyFilename="${path.basename(outputFileRaw)}" -Dlicense.excludedScopes="${AVAILABLE_SCOPES.filter(s => s !== scope).join(',')}"`);
-            if (command_log?.toLowerCase().includes('error')) {
+            if (isCommandError(command_log)) {
+                if (command_log) {
+                    errors.push(command_log);
+                }
                 break;
             }
             let scopeDependencies = parseDependencies(outputFileRaw, scope);
@@ -312,6 +321,13 @@ function setOutputs(result: Map<string, ResultType>, licenses: License[], depend
     result.set('scopes', licenses.map(l => l.scope).sort((a, b) => a.localeCompare(b)).filter((scope, i, arr) => i === 0 || arr[i - 1] !== scope).join(", "));
     result.set('scopes_all', AVAILABLE_SCOPES.sort((a, b) => a.localeCompare(b)).join(', '));
     console.log(`Saving results finish`)
+}
+
+function isCommandError(commandLog: string | null): boolean {
+    if (!commandLog) {
+        return false;
+    }
+    return commandLog.startsWith('Error:') || commandLog.includes('Command failed:');
 }
 
 function getWorkingDirectory(workspace: string | undefined | null): PathOrFileDescriptor {

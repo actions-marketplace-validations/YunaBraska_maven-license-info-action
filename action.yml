@@ -71,7 +71,7 @@ outputs:
   errors:
     description: 'List of processing errors as JSON array'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
   icon: file-text

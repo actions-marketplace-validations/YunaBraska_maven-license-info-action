@@ -28,11 +28,8 @@ test('Test on empty dir', () => {
     });
 });
 
-//Also used for shield demo
 test('Test on wrapper_17 dir', () => {
-    let realWorkDir = path.join(__dirname, addWinSupport('resources/maven/project/wrapper_17'));
-    removeDir(path.join(realWorkDir.toString(), 'target'));
-    let outputs = main.run(realWorkDir, -1, null, null, null, null, null);
+    let outputs = main.run(workDir, -1, null, null, null, null, null);
     withResultLogOnFailure(outputs, () => {
         expect(outputs.result.get('scopes')).toEqual('compile, test');
         expect(outputs.result.get('scopes_all')).toEqual('compile, import, provided, runtime, system, test');
@@ -206,4 +203,3 @@ function withResultLogOnFailure(outputs: { result: Map<string, unknown> }, runAs
         throw error;
     }
 }
-
